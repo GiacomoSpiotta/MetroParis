@@ -68,5 +68,32 @@ public class MetroDAO {
 		return linee;
 	}
 
+	public boolean fermateCollegate(Fermata f1, Fermata f2) {
+		final String sql = "SELECT COUNT (*) AS cnt "
+				+ "FROM connessione "
+				+ "WHERE (id_stazP = ? AND id_StazA = ?) OR "
+				+ "(id_stazP = ? AND id_StazA = ?)";
+			try {
+				Connection conn = DBConnect.getConnection();
+				PreparedStatement st = conn.prepareStatement(sql);
+				st.setInt(1, f1.getIdFermata());
+				st.setInt(2, f2.getIdFermata());
+				st.setInt(3, f2.getIdFermata());
+				st.setInt(4, f1.getIdFermata());
+				
+				ResultSet rs = st.executeQuery();
+				
+				int conteggio = rs.getInt("cnt");
+			
+				conn.close();
+				
+				return (conteggio>0);
+				
+			}catch(SQLException e) {
+				throw new RuntimeException("Error query", e);
+			}
+		
+	}
+
 
 }
